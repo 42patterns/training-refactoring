@@ -27,3 +27,6 @@ Steps
 4. TDD - stateful end-to-end test 
 > Add test based on protected method scope
 > Add characteristic test - for massive check
+
+5. Extract local variable
+> From a chained expression extract local variable temp

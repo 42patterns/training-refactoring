@@ -24,7 +24,7 @@ public class WebDictionary {
 		processMenu();
 	}
 	
-	protected void processMenu() {
+	private void processMenu() {
 		boolean isRunning = true;
 		Scanner scanner = new Scanner(System.in);
 		printInfo();
@@ -68,37 +68,42 @@ public class WebDictionary {
 
 	protected void searchWord(String c) {
 		foundWords.clear();
-		BufferedReader r = null;
-		String plW = null;
-		String enW = null;
-		int i = 1;
+		BufferedReader bufferedReader = null;
+		String polishWord = null;
+		String englishWord = null;
+		int counter = 1;
 		try {
-			r = new BufferedReader(new InputStreamReader(new URL(
-					"http://www.dict.pl/dict?word=" + c.split(" ")[1]
-							+ "&words=&lang=PL").openStream()));
-			boolean w1 = true;
-			String t = null;
+			String[] commandParts = c.split(" ");
+			String wordToFind = commandParts[1];
+			String urlString = "http://www.dict.pl/dict?word=" + wordToFind
+					+ "&words=&lang=PL";
+			
+			bufferedReader = new BufferedReader(new InputStreamReader(new URL(
+					urlString).openStream()));
+			boolean polish = true;
+			String line = bufferedReader.readLine();
 			Pattern pat = Pattern
 					.compile(".*<a href=\"dict\\?words?=(.*)&lang.*");
-			while ((t = r.readLine()) != null) {
-				Matcher matcher = pat.matcher(t);
+			while (hasNextLine(line)) {
+				Matcher matcher = pat.matcher(line);
 				if (matcher.find()) {
-					String t2 = matcher.group(matcher.groupCount());
-					if (w1) {
-						System.out.print(i + ") " + t2 + " => ");
-						plW = new String(t2.getBytes(), "UTF8");
-						w1 = false;
+					String foundWord = matcher.group(matcher.groupCount());
+					if (polish) {
+						System.out.print(counter + ") " + foundWord + " => ");
+						polishWord = new String(foundWord.getBytes(), "UTF8");
+						polish = false;
 					} else {
-						System.out.println(t2);
-						w1 = true;
-						enW = new String(t2.getBytes(), "UTF8");
+						System.out.println(foundWord);
+						polish = true;
+						englishWord = new String(foundWord.getBytes(), "UTF8");
 						foundWords.add(DictionaryWord.Builder
-								.withPolishWord(plW)
-								.withEnglishWord(enW)
+								.withPolishWord(polishWord)
+								.withEnglishWord(englishWord)
 								.build());
-						i++;
+						counter++;
 					}
 				}
+				line = bufferedReader.readLine();
 			}
 		} catch (MalformedURLException ex) {
 			ex.printStackTrace();
@@ -106,8 +111,8 @@ public class WebDictionary {
 			ex.printStackTrace();
 		} finally {
 			try {
-				if (r != null) {
-					r.close();
+				if (bufferedReader != null) {
+					bufferedReader.close();
 				}
 			} catch (IOException ex) {
 				ex.printStackTrace();
@@ -115,7 +120,11 @@ public class WebDictionary {
 		}
 	}
 
-	protected void printInfo() {
+	private boolean hasNextLine(String line) {
+		return (line != null);
+	}
+
+	private void printInfo() {
 		System.out.println("Welcome to Web Dictionary System .");
 	}
 }
