@@ -3,9 +3,15 @@ package com.example.webdictionary;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.webdictionary.iterators.PageIterator;
+import com.example.webdictionary.iterators.factory.PageIteratorAbstractFactory;
+
 public class SearchWordService {
 
-	public SearchWordService() {
+	private PageIteratorAbstractFactory factory;
+	
+	public SearchWordService(PageIteratorAbstractFactory factory) {
+		this.factory = factory;
 	}
 
 	public List<DictionaryWord> search(String command) {
@@ -15,7 +21,7 @@ public class SearchWordService {
 		String wordToFind = commandParts[1];
 
 		int counter = 1;
-		PageIterator iterator = new PageIterator(wordToFind);
+		PageIterator iterator = factory.build(wordToFind);
 
 		while (iterator.hasNext()) {
 			DictionaryWord.Builder builder = DictionaryWord.Builder

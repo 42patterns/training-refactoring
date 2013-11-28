@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import com.example.webdictionary.iterators.factory.DictPageIteratorFactory;
+
 public class WebDictionary {
 	List<DictionaryWord> savedWords = new ArrayList<DictionaryWord>();
 	List<DictionaryWord> foundWords = new ArrayList<DictionaryWord>();
@@ -60,7 +62,7 @@ public class WebDictionary {
 	}
 
 	protected void searchWord(String c) {
-		SearchWordService searchService = new SearchWordService();
+		SearchWordService searchService = new SearchWordService(new DictPageIteratorFactory());
 		foundWords.addAll(searchService.search(c));
 	}
 

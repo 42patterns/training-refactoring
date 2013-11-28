@@ -43,3 +43,7 @@ Steps
 9. Replace methods with Iterator function
 > Replace method with a method object (PageIterator)
 > Refator the iterator to implement Iterator<E> interface
+
+10. Extracting interface
+> PageIterator interface
+> Adding Onet Dictionary

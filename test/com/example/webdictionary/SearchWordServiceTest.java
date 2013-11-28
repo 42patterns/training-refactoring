@@ -1,7 +1,7 @@
 package com.example.webdictionary;
 
-import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,9 +11,13 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import com.example.webdictionary.iterators.factory.DictPageIteratorFactory;
+
 @RunWith(Parameterized.class)
 public class SearchWordServiceTest {
 
+	private SearchWordService service = new SearchWordService(new DictPageIteratorFactory());
+	
 	private String commandWord;
 	private String firstAnswers;
 	private String secondAnswers;
@@ -50,9 +54,6 @@ public class SearchWordServiceTest {
 
 	@Test
 	public void searchWordTest() {
-		// given
-		SearchWordService service = new SearchWordService();
-
 		// when
 		List<DictionaryWord> list = service.search(commandWord);
 
