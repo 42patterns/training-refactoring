@@ -23,3 +23,7 @@ Steps
 3. Adding model
 > Introduce test based on extending original object (and changing from private to protected)
 > Introduce builder pattern in model, toString w WebDictionary i moveMethod - to model
+
+4. TDD - stateful end-to-end test 
+> Add test based on protected method scope
+> Add characteristic test - for massive check
