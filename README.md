@@ -30,3 +30,6 @@ Steps
 
 5. Extract local variable
 > From a chained expression extract local variable temp
+
+6. Replace Method with Method Object
+> Extract searchWord method to an object
