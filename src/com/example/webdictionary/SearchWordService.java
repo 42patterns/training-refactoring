@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 public class SearchWordService {
 
+	private BufferedReader bufferedReader = null;
 	private final String command;
 	
 	public SearchWordService(String c) {
@@ -20,10 +21,58 @@ public class SearchWordService {
 
 	public List<DictionaryWord> search() {
 		List<DictionaryWord> words = new ArrayList<DictionaryWord>();
-		BufferedReader bufferedReader = null;
-		String polishWord = null;
-		String englishWord = null;
-		int counter = 1;
+		
+			int counter = 1;
+			prepareBufferedReader();
+			String currentWord = moveToNextWord();
+
+			while (hasNextWord(currentWord)) {
+				DictionaryWord.Builder builder = DictionaryWord.Builder
+						.withPolishWord(currentWord);
+				
+				currentWord = moveToNextWord();
+				builder.withEnglishWord(currentWord);
+				
+				currentWord = moveToNextWord();
+				
+				DictionaryWord word = builder.build();
+				words.add(word);
+				
+				System.out.println(counter + ") " + word.getPolishWord() + " => "
+						+ word.getEnglishWord());
+				counter++;
+			}
+			
+			dispose();
+			
+		return words;
+	}
+
+
+	private String moveToNextWord() {
+		try {
+			
+			String line = bufferedReader.readLine();
+			Pattern pat = Pattern
+					.compile(".*<a href=\"dict\\?words?=(.*)&lang.*");
+			
+			while (hasNextLine(line)) {
+				Matcher matcher = pat.matcher(line);
+				if (matcher.find()) {
+					return matcher.group(matcher.groupCount());
+				} else {
+					line = bufferedReader.readLine();
+				}
+			}
+
+		} catch (IOException e) {
+			throw new WebDictionaryException(e);
+		}
+		
+		return null;
+	}
+
+	private void prepareBufferedReader() {
 		try {
 			String[] commandParts = command.split(" ");
 			String wordToFind = commandParts[1];
@@ -32,49 +81,28 @@ public class SearchWordService {
 			
 			bufferedReader = new BufferedReader(new InputStreamReader(new URL(
 					urlString).openStream()));
-			boolean polish = true;
-			String line = bufferedReader.readLine();
-			Pattern pat = Pattern
-					.compile(".*<a href=\"dict\\?words?=(.*)&lang.*");
-			while (hasNextLine(line)) {
-				Matcher matcher = pat.matcher(line);
-				if (matcher.find()) {
-					String foundWord = matcher.group(matcher.groupCount());
-					if (polish) {
-						System.out.print(counter + ") " + foundWord + " => ");
-						polishWord = new String(foundWord.getBytes(), "UTF8");
-						polish = false;
-					} else {
-						System.out.println(foundWord);
-						polish = true;
-						englishWord = new String(foundWord.getBytes(), "UTF8");
-						words.add(DictionaryWord.Builder
-								.withPolishWord(polishWord)
-								.withEnglishWord(englishWord)
-								.build());
-						counter++;
-					}
-				}
-				line = bufferedReader.readLine();
-			}
 		} catch (MalformedURLException ex) {
-			ex.printStackTrace();
+			throw new WebDictionaryException(ex);
 		} catch (IOException ex) {
-			ex.printStackTrace();
-		} finally {
-			try {
-				if (bufferedReader != null) {
-					bufferedReader.close();
-				}
-			} catch (IOException ex) {
-				ex.printStackTrace();
+			throw new WebDictionaryException(ex);
+		}
+	}
+
+	private void dispose() {
+		try {
+			if (bufferedReader != null) {
+				bufferedReader.close();
 			}
-		}	
-		
-		return words;
+		} catch (IOException ex) {
+			throw new WebDictionaryException(ex);
+		}
 	}
 	
 	private boolean hasNextLine(String line) {
+		return (line != null);
+	}
+	
+	private boolean hasNextWord(String line) {
 		return (line != null);
 	}
 }

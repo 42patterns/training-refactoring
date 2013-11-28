@@ -33,3 +33,9 @@ Steps
 
 6. Replace Method with Method Object
 > Extract searchWord method to an object
+
+7. Rewrite the algorythm for readability (make it human readable)
+> Extract initialization and iterating methods to funtions
+
+8. Explicite exception handling
+> Introduce application exception
