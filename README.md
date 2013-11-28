@@ -39,3 +39,7 @@ Steps
 
 8. Explicite exception handling
 > Introduce application exception
+
+9. Replace methods with Iterator function
+> Replace method with a method object (PageIterator)
+> Refator the iterator to implement Iterator<E> interface

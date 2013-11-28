@@ -51,10 +51,10 @@ public class SearchWordServiceTest {
 	@Test
 	public void searchWordTest() {
 		// given
-		SearchWordService service = new SearchWordService(commandWord);
+		SearchWordService service = new SearchWordService();
 
 		// when
-		List<DictionaryWord> list = service.search();
+		List<DictionaryWord> list = service.search(commandWord);
 
 		// then
 		assertThat(list.size(), is(equalTo(totalSize)));

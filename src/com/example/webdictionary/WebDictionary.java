@@ -60,8 +60,8 @@ public class WebDictionary {
 	}
 
 	protected void searchWord(String c) {
-		SearchWordService searchService = new SearchWordService(c);
-		foundWords.addAll(searchService.search());
+		SearchWordService searchService = new SearchWordService();
+		foundWords.addAll(searchService.search(c));
 	}
 
 	private void printInfo() {
